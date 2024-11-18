@@ -33,10 +33,6 @@ class HomeAdapter(
         holder.teamName.text = team.name
         holder.venueName.text = "${team.venueName} - ${team.venueCity}"
 
-        // Load logo with Glide or Picasso
-        Glide.with(holder.itemView.context)
-            .load(team.logoUrl ?: "URL_DEFAULT")
-            .into(holder.teamLogo)
 
         // Set background color with primaryColor
         holder.itemView.setBackgroundColor(Color.parseColor(team.primaryColor))

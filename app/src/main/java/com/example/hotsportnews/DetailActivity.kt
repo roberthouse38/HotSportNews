@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.hotsportnews.ui.home.Team
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.Response
 import org.json.JSONObject
 import java.io.IOException
 
@@ -19,25 +18,26 @@ class DetailActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_detail)
+        setContentView(R.layout.activity_detail) // Pastikan file XML ini benar
 
         val team = intent.getParcelableExtra<Team>("teamData")
-        team?.let {
-            findViewById<TextView>(R.id.teamNameTextView).text = it.name
-            fetchTeamDetails(it.id)
-            fetchSquadDetails(it.id)
-        }
-    }
+        if (team != null) {
+            // Gunakan ID yang benar dari layout XML
+            val teamNameTextView = findViewById<TextView>(R.id.teamNameTextView)
+            teamNameTextView.text = team.name
 
-    private fun fetchTeamDetails(id: Int) {
-        Log.d("DetailActivity", "Fetching details for team ID: $id")
+            // Fetch detail squad
+            fetchSquadDetails(team.id)
+        } else {
+            Log.e("DetailActivity", "No team data received")
+        }
     }
 
     private fun fetchSquadDetails(teamId: Int) {
         val request = Request.Builder()
             .url("https://divanscore.p.rapidapi.com/teams/get-squad?teamId=$teamId")
             .get()
-            .addHeader("x-rapidapi-key", "64b9c6df16mshae29f1170c9428fp1670b5jsnb81c8cdf6611")
+            .addHeader("x-rapidapi-key", "64b9c6df16mshae29f1170c9428fp1670b5jsnb81c8cdf6611") // Ganti dengan API key Anda
             .addHeader("x-rapidapi-host", "divanscore.p.rapidapi.com")
             .build()
 
@@ -46,52 +46,41 @@ class DetailActivity : AppCompatActivity() {
                 Log.e("DetailActivity", "Error fetching squad details: ${e.message}")
             }
 
-            override fun onResponse(call: okhttp3.Call, response: Response) {
+            override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
                 response.body?.string()?.let { responseData ->
-                    Log.d("DetailActivity", "Response data: $responseData")  // Debugging output
                     try {
                         val jsonObject = JSONObject(responseData)
-                        if (jsonObject.has("players")) {
-                            val playersArray = jsonObject.getJSONArray("players")
+                        val playersArray = jsonObject.optJSONArray("players")
+                        val playerList = mutableListOf<Player>()
 
-                            val playerList = mutableListOf<Player>()
-
+                        if (playersArray != null) {
                             for (i in 0 until playersArray.length()) {
                                 val playerObject = playersArray.getJSONObject(i)
-                                if (playerObject.has("player")) {
-                                    val player = playerObject.getJSONObject("player")
-                                    val playerName = player.optString("name", "Unknown Player")
-                                    val position = player.optString("position", "Unknown Position")
-                                    val jerseyNumber = player.optInt("jerseyNumber", 0)
-                                    val height = player.optInt("height", 0) // Gunakan default 0 jika height tidak ada
-                                    val country = player.getJSONObject("country").getString("name")
-                                    val marketValue = player.optInt("proposedMarketValue", 0)
+                                val player = playerObject.getJSONObject("player")
+                                val playerName = player.optString("name", "Unknown")
+                                val position = player.optString("position", "Unknown")
+                                val jerseyNumber = player.optInt("jerseyNumber", 0)
+                                val height = player.optInt("height", 0)
+                                val country = player.getJSONObject("country").optString("name", "Unknown")
+                                val marketValue = player.optInt("proposedMarketValue", 0)
 
-                                    // Menambahkan player ke dalam list
-                                    playerList.add(
-                                        Player(
-                                            playerName,
-                                            position,
-                                            jerseyNumber,
-                                            height,
-                                            country,
-                                            marketValue
-                                        )
+                                playerList.add(
+                                    Player(
+                                        playerName,
+                                        position,
+                                        jerseyNumber,
+                                        height,
+                                        country,
+                                        marketValue
                                     )
-                                } else {
-                                    Log.e("DetailActivity", "No 'player' object found at index $i")
-                                }
+                                )
                             }
+                        }
 
-                            runOnUiThread {
-                                val recyclerView =
-                                    findViewById<RecyclerView>(R.id.squadRecyclerView)
-                                recyclerView.layoutManager =
-                                    LinearLayoutManager(this@DetailActivity)
-                                recyclerView.adapter = SquadAdapter(playerList)
-                            }
-                        } else {
-                            Log.e("DetailActivity", "'players' array not found in JSON")
+                        runOnUiThread {
+                            val recyclerView = findViewById<RecyclerView>(R.id.squadRecyclerView)
+                            recyclerView.layoutManager = LinearLayoutManager(this@DetailActivity)
+                            recyclerView.adapter = SquadAdapter(playerList)
                         }
                     } catch (e: Exception) {
                         Log.e("DetailActivity", "Error parsing squad JSON: ${e.message}")

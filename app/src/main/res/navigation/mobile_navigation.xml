@@ -34,4 +34,11 @@
         android:name="com.example.hotsportnews.ui.profile.ProfileFragment"
         android:label="@string/title_profile"
         tools:layout="@layout/fragment_profile"/>
+
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="com.example.hotsportnews.ui.news.DetailFragment"
+        android:label="DetailFragment"
+        tools:layout="@layout/fragment_detail" />
+
 </navigation>

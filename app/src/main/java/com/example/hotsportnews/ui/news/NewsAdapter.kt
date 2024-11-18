@@ -16,11 +16,10 @@ class NewsAdapter(
 
     inner class NewsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nameTextView: TextView = itemView.findViewById(R.id.result_name)
-        val descriptionTextView: TextView = itemView.findViewById(R.id.result_description)
+
 
         fun bind(resultItem: ResultItem) {
             nameTextView.text = resultItem.name
-            descriptionTextView.text = resultItem.description
             itemView.setOnClickListener { itemClickListener(resultItem) }
         }
     }

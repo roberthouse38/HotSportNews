@@ -8,6 +8,7 @@ import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.hotsportnews.R
 import com.example.hotsportnews.databinding.FragmentNewsBinding
 import okhttp3.*
 import org.json.JSONException
@@ -106,7 +107,17 @@ class NewsFragment : Fragment() {
 
 
     private fun showDetail(resultItem: ResultItem) {
-        // Handle navigation to detail page or display more details here
+        val detailFragment = DetailFragment().apply {
+            arguments = Bundle().apply {
+                putString("name", resultItem.name)
+                putString("description", resultItem.description)
+            }
+        }
+        // Mengganti fragment dalam kontainer di dalam NewsFragment
+        childFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, detailFragment) // Pastikan `fragment_container` ada di layout `NewsFragment`
+            .addToBackStack(null)
+            .commit()
     }
 
     override fun onDestroyView() {
