@@ -1,4 +1,4 @@
-package com.example.hotsportnews.ui.news
+package com.example.hotsportnews.ui.search
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

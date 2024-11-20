@@ -1,4 +1,4 @@
-package com.example.hotsportnews.ui.news
+package com.example.hotsportnews.ui.search
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.hotsportnews.R
 import com.example.hotsportnews.databinding.FragmentNewsBinding
@@ -31,7 +30,6 @@ class NewsFragment : Fragment() {
         val root: View = binding.root
 
         newsAdapter = NewsAdapter(listOf()) { resultItem ->
-            // Handle item click: navigate to detail page or show more info
             showDetail(resultItem)
         }
 
@@ -39,16 +37,19 @@ class NewsFragment : Fragment() {
         binding.searchResultsRecyclerView.adapter = newsAdapter
 
         val searchBar: EditText = binding.searchBar
-        searchBar.setOnEditorActionListener { _, _, _ ->
+        val searchButton = binding.searchButton // Referensi tombol search
+
+        // Listener untuk tombol Search
+        searchButton.setOnClickListener {
             val query = searchBar.text.toString()
             if (query.isNotEmpty()) {
                 searchNews(query)
             }
-            true
         }
 
         return root
     }
+
 
     private fun searchNews(query: String) {
         val request = Request.Builder()

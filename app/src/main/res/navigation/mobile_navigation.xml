@@ -13,8 +13,8 @@
 
     <fragment
         android:id="@+id/navigation_news"
-        android:name="com.example.hotsportnews.ui.news.NewsFragment"
-        android:label="@string/title_dashboard"
+        android:name="com.example.hotsportnews.ui.search.NewsFragment"
+        android:label="@string/title_search"
         tools:layout="@layout/fragment_news" />
 
     <fragment
@@ -37,7 +37,7 @@
 
     <fragment
         android:id="@+id/detailFragment"
-        android:name="com.example.hotsportnews.ui.news.DetailFragment"
+        android:name="com.example.hotsportnews.ui.search.DetailFragment"
         android:label="DetailFragment"
         tools:layout="@layout/fragment_detail" />
 

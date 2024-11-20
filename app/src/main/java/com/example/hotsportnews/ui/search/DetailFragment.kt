@@ -1,4 +1,4 @@
-package com.example.hotsportnews.ui.news
+package com.example.hotsportnews.ui.search
 
 import android.os.Bundle
 import android.view.LayoutInflater
